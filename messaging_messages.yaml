@@ -1,0 +1,216 @@
+openapi: 3.0.0
+# Added by API Auto Mocking Plugin
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/messaging6/sending/1.0.0
+info:
+  version: 1.0.0
+  title: test
+paths:
+  '/transactionalmessages/v1/{channel}/messages/':
+    parameters:
+      - in: path
+        name: channel
+        required: true
+        schema:
+          type: string
+          enum:
+            - email
+            - sms
+    post:
+      tags:
+        - ' sends'
+      summary: sends a message with a unique messageKey
+      requestBody:
+        $ref: '#/components/requestBodies/RQ_SendRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/RS_request'
+                  - $ref: '#/components/schemas/RS_message'
+
+    get:
+      tags:
+        - ' sends'
+      summary: get a collection of messageKeys
+      responses:
+        '405':
+          description: Not Allowed
+
+  '/transactionalmessages/v1/{channel}/messages/{messageKey}':
+    parameters:
+      - in: path
+        name: channel
+        required: true
+        schema:
+          type: string
+          enum:
+            - email
+            - sms
+      - in: path
+        name: messageKey
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - ' sends'
+      summary: sends a message with a unique messageKey
+      requestBody:
+        $ref: '#/components/requestBodies/RQ_SendRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/RS_request'
+
+    get:
+      tags:
+        - ' sends'
+      summary: get a collection of messageKeys
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/RS_request'
+                  - $ref: '#/components/schemas/RS_messageWebhook'
+
+
+ 
+components:
+  requestBodies:
+    RQ_SendRequest:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/S_SendBody' #must nest attribute
+              #S_Message
+        
+  schemas:
+    S_SendBody:
+      properties:
+        definitionKey:
+          type: string
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/S_Message'
+        recipient:
+          allOf: #Change this to one off, how to show in example?
+            - $ref: '#/components/schemas/S_Recipient'
+        recipients:
+          allOf: #Change this to one off, how to show in example?
+            - $ref: '#/components/schemas/S_Recipients'
+        options:
+           $ref: '#/components/schemas/S_Options'
+    S_Message:
+      properties:
+        text:
+          type: string
+    S_Recipients:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/S_RecipientProps'
+    S_Recipient:
+      allOf:
+        - $ref: '#/components/schemas/S_RecipientProps'
+    S_RecipientProps:
+      properties:
+        messageKey:
+          type: string
+          example: lpEBCh5ZSKCw2AAAZ9mobQ
+        to:
+          type: string
+          example: test@example.com
+        subscriberKey:
+          type: string
+          example: test123456
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+    S_Options:
+      properties:
+        autoAddSubscriber:
+          type: boolean
+        email:
+          $ref: '#/components/schemas/S_OptionsEmail'
+        sms:
+          $ref: '#/components/schemas/S_OptionsSms'
+    S_OptionsEmail:
+      properties:
+        updateSubscriber:
+          type: boolean
+    S_OptionsSms:
+      properties:
+        resubscribe:
+          type: boolean
+        keyword:
+          type: string
+
+#---------------------------------#
+#--   COMPONENT.RESPONSES       --#
+#---------------------------------#
+    RS_request:
+      type: object
+      properties:
+        requestId:
+          type: string
+          format: UUID v4
+          example: ba9633fa-5c8d-4c42-8efa-a16412ac0c53
+        errorCode:
+          type: integer
+          example: 7005
+        errorMessage:
+          type: string
+          example: Ensure you include all required fields in the body of the request
+    RS_message:
+      type: object
+      properties:
+        responses:
+          type: array
+          items:
+            type: object
+            properties:
+              messageKey:
+                type: string
+                example: 9691010a-1e59-48a0-b0d8-67d9a86dc470
+              errorCode:
+                type: integer
+              errorMessage:
+                type: string
+    RS_messageWebhook:
+      type: object
+      properties:
+        type:
+          type: string
+          example: TransactionalSendEvents.EmailSent
+        timestamp:
+          type: string
+          format: date-time
+        compositeId:
+          type: string
+          example: tsid.job.list.batch.sub
+        info:
+          type: object
+          properties:
+            messageKey:
+              type: string
+              format: UUID v4
+              example: 9691010a-1e59-48a0-b0d8-67d9a86dc470
+            subscriberKey:
+              type: string
+            emailAddress:
+              type: string
+              example: john.smith@example.com
