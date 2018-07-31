@@ -115,28 +115,93 @@ paths:
                 - $ref: '#/components/schemas/smsRequest'
 components:
   requestBodies:
-    EmailDefinitionSendSendBody:
+    RQ_SendRequest:
       content:
         application/json:
           schema:
             allOf:
-              - $ref: '#/components/schemas/emaildefintion'
+              - $ref: '#/components/schemas/S_SendBody' #must nest attribute
+              #S_Message
+        
   schemas:
+    S_SendBody:
+      properties:
+        definitionKey:
+          type: string
+        messages:
+          allOf:
+            - $ref: '#/components/schemas/S_Message'
+        recipient:
+          allOf: #Change this to one off, how to show in example?
+            - $ref: '#/components/schemas/S_Recipient'
+        recipients:
+          allOf: #Change this to one off, how to show in example?
+            - $ref: '#/components/schemas/S_Recipients'
+        options:
+           $ref: '#/components/schemas/S_Options'
+    S_Message:
+      properties:
+        text:
+          type: string
+    S_Recipients:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/S_RecipientProps'
+    S_Recipient:
+      allOf:
+        - $ref: '#/components/schemas/S_RecipientProps'
+    S_RecipientProps:
+      properties:
+        messageKey:
+          type: string
+          example: lpEBCh5ZSKCw2AAAZ9mobQ
+        to:
+          type: string
+          example: test@example.com
+        subscriberKey:
+          type: string
+          example: test123456
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+    S_Options:
+      properties:
+        autoAddSubscriber:
+          type: boolean
+        email:
+          $ref: '#/components/schemas/S_OptionsEmail'
+        sms:
+          $ref: '#/components/schemas/S_OptionsSms'
+    S_OptionsEmail:
+      properties:
+        updateSubscriber:
+          type: boolean
+    S_OptionsSms:
+      properties:
+        resubscribe:
+          type: boolean
+        keyword:
+          type: string
 
-    apiResponseBody:
+#---------------------------------#
+#--   COMPONENT.RESPONSES       --#
+#---------------------------------#
+    RS_request:
       type: object
       properties:
         requestId:
           type: string
           format: UUID v4
           example: ba9633fa-5c8d-4c42-8efa-a16412ac0c53
-        statusCode:
+        errorCode:
           type: integer
           example: 7005
-        statusMessage:
+        errorMessage:
           type: string
           example: Ensure you include all required fields in the body of the request
-    messageSendResponse:
+    RS_message:
       type: object
       properties:
         responses:
@@ -151,7 +216,7 @@ components:
                 type: integer
               errorMessage:
                 type: string
-    messageWebhookResponse:
+    RS_messageWebhook:
       type: object
       properties:
         type:

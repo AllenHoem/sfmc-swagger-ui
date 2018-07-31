@@ -1,0 +1,38 @@
+components:
+  schemas:
+    singleCommonRequestRecipient:
+      properties:
+        to:
+          type: string
+          description: >
+            For email, this is the email address. For SMS, this is the E.164
+            mobile number.
+          example: 9691010a-1e59-48a0-b0d8-67d9a86dc470
+        subscriberKey:
+          type: string
+          description: >-
+            a text field that contains a value that uniquely identifies a
+            subscriber in your system. A subscriber key is limited to English
+            characters only.
+          example: rsmith39482
+    batchCommonRequestRecipient:
+            properties:
+        to:
+          type: string
+          description: >
+            For email, this is the email address. For SMS, this is the E.164
+            mobile number.
+        messageKey:
+          type: string
+          description: >-
+            Unique client-provided identifier for a specific message to a
+            recipient that could be used to provide feedback for that specific
+            message.
+          example: 9691010a-1e59-48a0-b0d8-67d9a86dc470
+        subscriberKey:
+          type: string
+          description: >-
+            a text field that contains a value that uniquely identifies a
+            subscriber in your system. A subscriber key is limited to English
+            characters only.
+          example: rsmith39482
