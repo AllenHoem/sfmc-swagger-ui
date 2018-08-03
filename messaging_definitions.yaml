@@ -67,7 +67,7 @@ paths:
         '200':
           description: OK
     post:
-      operationId: EmailDefinitionSend
+      operationId: 
       tags:
         - ' definitions'
       summary: create a send definition
@@ -79,111 +79,75 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/apiResponseBody'
-                  - $ref: '#/components/schemas/messageSendResponse'
+                  - $ref: '#/components/schemas/RS_request'
+                 # - $ref: '#/components/schemas/messageSendResponse'
       requestBody:
-        $ref: '#/components/requestBodies/EmailDefinitionSendSendBody'
+        $ref: '#/components/requestBodies/RQ_definition'
 
-    parameters:
-      - in: path
-        name: definitionKey
-        description: your  send defintion
-        required: true
-        schema:
-          type: string
-    post:
-      deprecated: true
-      operationId: SmsDefinitionSend
-      tags:
-        - ' sends'
-      summary: send a SMS message
-      description: ''
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/apiResponseBody'
-                  - $ref: '#/components/schemas/messageSendResponse'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/smsRequest'
 components:
   requestBodies:
-    RQ_SendRequest:
+    RQ_definition:
       content:
         application/json:
           schema:
             allOf:
-              - $ref: '#/components/schemas/S_SendBody' #must nest attribute
+              - $ref: '#/components/schemas/S_body' #must nest attribute
               #S_Message
         
   schemas:
-    S_SendBody:
+    S_body:
       properties:
         definitionKey:
           type: string
-        messages:
-          allOf:
-            - $ref: '#/components/schemas/S_Message'
-        recipient:
-          allOf: #Change this to one off, how to show in example?
-            - $ref: '#/components/schemas/S_Recipient'
-        recipients:
-          allOf: #Change this to one off, how to show in example?
-            - $ref: '#/components/schemas/S_Recipients'
+        classification:
+          type: string
+          example: "Default Transactional"
+        name:
+          type: string
+          example: " "
+        description:
+          type: string
+          example: " "
+        description:
+          type: string
+          example: " "
+        content:
+           $ref: '#/components/schemas/S_Content'
+        subscriptions:
+           $ref: '#/components/schemas/S_Subscriptions'
         options:
            $ref: '#/components/schemas/S_Options'
-    S_Message:
+    S_Content:
       properties:
-        text:
+        contentKey:
           type: string
-    S_Recipients:
-      type: array
-      items:
-        allOf:
-          - $ref: '#/components/schemas/S_RecipientProps'
-    S_Recipient:
-      allOf:
-        - $ref: '#/components/schemas/S_RecipientProps'
-    S_RecipientProps:
-      properties:
-        messageKey:
-          type: string
-          example: lpEBCh5ZSKCw2AAAZ9mobQ
-        to:
-          type: string
-          example: test@example.com
-        subscriberKey:
-          type: string
-          example: test123456
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
+          example: UUID
+          description: The customer_key provided in Content Builder for a given asset
     S_Options:
-      properties:
+      properties:  
+        trackLinks:
+            type: string
+            example: my_list_customer_key
+            description: The customer_key provided in Content Builder for a given asset    
+    S_Subscriptions:
+      properties: 
+        list:
+            type: string
+            example: my_list_customer_key
+            description: The customer_key provided in you list properties.
+        dataExtention:
+            type: string
+            example: my_data_extension_external_key
+            description: The external_key provided from your DE properties.
         autoAddSubscriber:
-          type: boolean
-        email:
-          $ref: '#/components/schemas/S_OptionsEmail'
-        sms:
-          $ref: '#/components/schemas/S_OptionsSms'
-    S_OptionsEmail:
-      properties:
+            type: boolean
+            example: true
+            description: Add subscriber address, subscriber key and personalization attributes to the list when the attributes match. Updates are keyed off of the subscriberKey
         updateSubscriber:
-          type: boolean
-    S_OptionsSms:
-      properties:
-        resubscribe:
-          type: boolean
-        keyword:
-          type: string
+            type: string
+            example: true
+            description: Updates subscriber address and personalization attributes to the list when the attributes match for a given subscriberKey
+
 
 #---------------------------------#
 #--   COMPONENT.RESPONSES       --#
