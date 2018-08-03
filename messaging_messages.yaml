@@ -4,8 +4,8 @@ servers:
   - description: SwaggerHub API Auto Mocking
     url: https://virtserver.swaggerhub.com/messaging6/sending/1.0.0
 info:
-  version: 1.0.0
-  title: test
+  version: 215.180803
+  title: Transactional Messaging APIs (Pre-Release)
 paths:
   '/transactionalmessages/v1/{channel}/messages/':
     parameters:

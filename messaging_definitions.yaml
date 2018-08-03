@@ -3,7 +3,7 @@ servers: []
 info:
   description: ''
   version: 215.180803
-  title: Pre-Release Salesforce Marketing Cloud  Messaging APIs
+  title: Transactional Messaging APIs (Pre-Release)
 paths:
   '/transactionalmessages/v1/{channel}/definitions/':
     parameters:
