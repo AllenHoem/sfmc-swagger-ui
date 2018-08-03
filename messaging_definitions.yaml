@@ -2,7 +2,7 @@ openapi: 3.0.0
 servers: []
 info:
   description: ''
-  version: 215.180605.1555
+  version: 215.180803
   title: Pre-Release Salesforce Marketing Cloud  Messaging APIs
 paths:
   '/transactionalmessages/v1/{channel}/definitions/':
@@ -22,6 +22,15 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/S_definition_response_body'
+                  - $ref: '#/components/schemas/S_definition_request_body'
+
+      requestBody:
+        $ref: '#/components/requestBodies/RQ_definition'    
     get:
       tags:
         - ' definitions'
@@ -29,6 +38,13 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/S_definition_response_body'
+                  - $ref: '#/components/schemas/S_definition_request_body'
+
   '/transactionalmessages/v1/{channel}/definitions/{definitionKey}':
     parameters:
       - in: path
@@ -52,6 +68,12 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/S_definition_response_body'
+                  - $ref: '#/components/schemas/S_definition_request_body'
     patch:
       tags:
         - ' definitions'
@@ -59,6 +81,12 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/S_definition_response_body'
+                  - $ref: '#/components/schemas/S_definition_request_body'
     delete:
       tags:
         - ' definitions'
@@ -67,8 +95,7 @@ paths:
         '200':
           description: OK
     post:
-      operationId: 
-      tags:
+       tags:
         - ' definitions'
       summary: create a send definition
       description: ''
@@ -79,7 +106,8 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/RS_request'
+                  - $ref: '#/components/schemas/S_definition_response_body'
+                  - $ref: '#/components/schemas/S_definition_request_body'
                  # - $ref: '#/components/schemas/messageSendResponse'
       requestBody:
         $ref: '#/components/requestBodies/RQ_definition'
@@ -91,17 +119,31 @@ components:
         application/json:
           schema:
             allOf:
-              - $ref: '#/components/schemas/S_body' #must nest attribute
+              - $ref: '#/components/schemas/S_definition_request_body' #must nest attribute
               #S_Message
         
   schemas:
-    S_body:
+    S_definition_response_body:
+      properties:
+        requestId:
+            type: string
+            example: UUID  
+        createdDate:
+            type: dateTime
+            example:  "2018-07-18T19:52:00"
+          modifiedDate:
+            type: string
+            example:  "2018-07-18T19:52:00"
+    S_definition_request_body:
       properties:
         definitionKey:
+          type: string
+        status:
           type: string
         classification:
           type: string
           example: "Default Transactional"
+          description: "(R216) The external_key for a transactional classifications. Commericials sends are not supported. "
         name:
           type: string
           example: " "
@@ -126,9 +168,9 @@ components:
     S_Options:
       properties:  
         trackLinks:
-            type: string
-            example: my_list_customer_key
-            description: The customer_key provided in Content Builder for a given asset    
+            type: boolean
+            example: true
+            description: (R216) The customer_key provided in Content Builder for a given asset    
     S_Subscriptions:
       properties: 
         list:
@@ -142,11 +184,11 @@ components:
         autoAddSubscriber:
             type: boolean
             example: true
-            description: Add subscriber address, subscriber key and personalization attributes to the list when the attributes match. Updates are keyed off of the subscriberKey
+            description: (R216) Add subscriber address, subscriber key and personalization attributes to the list when the attributes match. Updates are keyed off of the subscriberKey
         updateSubscriber:
             type: string
             example: true
-            description: Updates subscriber address and personalization attributes to the list when the attributes match for a given subscriberKey
+            description: (R216) Updates subscriber address and personalization attributes to the list when the attributes match for a given subscriberKey
 
 
 #---------------------------------#
@@ -180,27 +222,3 @@ components:
                 type: integer
               errorMessage:
                 type: string
-    RS_messageWebhook:
-      type: object
-      properties:
-        type:
-          type: string
-          example: TransactionalSendEvents.EmailSent
-        timestamp:
-          type: string
-          format: date-time
-        compositeId:
-          type: string
-          example: tsid.job.list.batch.sub
-        info:
-          type: object
-          properties:
-            messageKey:
-              type: string
-              format: UUID v4
-              example: 9691010a-1e59-48a0-b0d8-67d9a86dc470
-            subscriberKey:
-              type: string
-            emailAddress:
-              type: string
-              example: john.smith@example.com
