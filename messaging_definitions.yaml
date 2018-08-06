@@ -2,7 +2,7 @@ openapi: 3.0.0
 servers: []
 info:
   description: ''
-  version: 215.180803
+  version: v215.180803
   title: Transactional Messaging APIs (Pre-Release)
 paths:
   '/transactionalmessages/v1/{channel}/definitions/':
@@ -95,7 +95,7 @@ paths:
         '200':
           description: OK
     post:
-       tags:
+      tags:
         - ' definitions'
       summary: create a send definition
       description: ''
@@ -126,20 +126,24 @@ components:
     S_definition_response_body:
       properties:
         requestId:
-            type: string
-            example: UUID  
+          type: string
+          example: UUID  
         createdDate:
-            type: dateTime
-            example:  "2018-07-18T19:52:00"
-          modifiedDate:
-            type: string
-            example:  "2018-07-18T19:52:00"
+          type: dateTime
+          example:  "2018-07-18T19:52:00"
+        modifiedDate:
+          type: string
+          example:  "2018-07-18T19:52:00"
     S_definition_request_body:
       properties:
         definitionKey:
           type: string
+          example: "my_definition_key"
+          description: The ID by which you access the API URI resource. This replaces the external_key in the triggered send API. 
         status:
           type: string
+          example: "Active"
+          description: Active - Accepts API requests and processes sends. Inactive - Accepts API requests and stops processing sends; queues. 
         classification:
           type: string
           example: "Default Transactional"
